@@ -121,7 +121,7 @@
             <h2>Prepare thyself for an epic QA adventure!</h2>
             <p>Test Quest Name: ${questName}</p>
             <p>Test Quest Description: ${questDescription}</p>
-            <p>Test Complexity Level: ${questLevel}</p>
+            <p>Quest Complexity Level: ${questLevel}</p>
             <p>Test Type: ${questType ? questType : "None selected"}</p>
             <p>Duration: ${questDuration} hours</p>
             <p>Reward: ${reward}</p>
@@ -159,20 +159,20 @@
 
       <label for="questLevel">Complexity Level:</label>
       <select id="questLevel" class="form-control">
-        <option value="easy">Noob QA</option>
-        <option value="medium">Senior QA</option>
-        <option value="hard">Test Ninja</option>
-        <option value="hard">QA Manager</option>
+        <option value="noob">Noob QA</option>
+        <option value="senior">Senior QA</option>
+        <option value="ninja">Test Ninja</option>
+        <option value="manager">QA Manager</option>
       </select>
 
       <fieldset>
-        <legend>Test Type:</legend>
+        <legend>Quest Type:</legend>
         <label><input type="radio" name="questType" value="rescue"> Bug Investigation</label><br>
         <label><input type="radio" name="questType" value="battle"> Regression Battle</label><br>
         <label><input type="radio" name="questType" value="exploration"> Exploratory Testing</label>
       </fieldset>
 
-      <br><label for="questDuration">Test Execution Duration (in hours):</label>
+      <br><label for="questDuration">Quest Execution Duration (in hours):</label>
       <input type="number" id="questDuration" name="questDuration" class="form-control" min="1" max="24">
 
       <label for="reward">Bug Bounty Reward Type:</label>
