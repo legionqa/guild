@@ -1,0 +1,1775 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap" rel="stylesheet">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Legion QA Wizards Trainer Guild</title>
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(to right, #f3d9b1, #e09f3e);
+      background-size: cover;
+      margin: 0;
+      padding: 20px;
+    }
+    .container {
+      max-width: 900px;
+      margin: auto;
+      background: #fff;
+      padding: 20px;
+      box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+    }
+    h1, h2 {
+      text-align: center;
+      color: #2c3e50;
+    }
+    .btn {
+      padding: 10px 20px;
+      margin: 10px;
+      background-color: #1abc9c;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+    .btn:hover {
+      background-color: #16a085;
+    }
+    .question {
+      margin-top: 20px;
+      background: #f9f9f9;
+      padding: 15px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+    .options {
+      list-style: none;
+      padding: 0;
+    }
+    .options li {
+      margin: 10px 0;
+    }
+    .score {
+      font-size: 1.5em;
+      text-align: center;
+      margin-top: 20px;
+      color: #2980b9;
+    }
+    .name-input {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    .popup {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background-color: #2c3e50;
+      color: #ecf0f1;
+      padding: 30px;
+      border-radius: 15px;
+      text-align: center;
+      box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+      z-index: 1000;
+    }
+    .popup button {
+      background-color: #e74c3c;
+      color: #fff;
+      border: none;
+      padding: 10px 20px;
+      cursor: pointer;
+      border-radius: 10px;
+      margin-top: 20px;
+    }
+    .correct-counter {
+      text-align: center;
+      font-size: 1.2em;
+      color: #2980b9;
+      margin-top: 20px;
+    }
+  </style>
+  <script>
+    let currentQuestion = 0;
+    let score = 0;
+    let playerName = "";
+    let maxQuestions = 10;
+    let selectedQuestions = [];
+
+    const questions = [
+      {
+        question: "What is the main purpose of QA testing?",
+        options: [
+          "To find bugs",
+          "To improve user experience",
+          "To ensure software quality",
+          "All of the above"
+        ],
+        answer: 3
+      },
+      {
+        question: "Which tool is commonly used for bug tracking?",
+        options: [
+          "Jira",
+          "Selenium",
+          "Git",
+          "Docker"
+        ],
+        answer: 0
+      },
+      {
+        question: "What does 'Regression Testing' mean?",
+        options: [
+          "Testing new features",
+          "Testing to ensure old features still work",
+          "Performance testing",
+          "Security testing"
+        ],
+        answer: 1
+      },
+      // Add 50 more questions here
+      {
+        question: "What is a test case?",
+        options: [
+          "A set of actions to verify a particular feature",
+          "A bug report",
+          "A project management tool",
+          "A type of user story"
+        ],
+        answer: 0
+      },
+      {
+        question: "Which type of testing is done without executing the code?",
+        options: [
+          "Unit Testing",
+          "Integration Testing",
+          "Static Testing",
+          "System Testing"
+        ],
+        answer: 2
+      },
+      {
+        question: "What is the purpose of smoke testing?",
+        options: [
+          "To ensure new features work",
+          "To ensure critical functionality works",
+          "To test performance under load",
+          "To validate security"
+        ],
+        answer: 1
+      },
+      {
+        question: "Which of the following is a non-functional testing type?",
+        options: [
+          "Regression Testing",
+          "Performance Testing",
+          "Unit Testing",
+          "Integration Testing"
+        ],
+        answer: 1
+      },
+      {
+        question: "What does 'Exploratory Testing' involve?",
+        options: [
+          "Following pre-written test cases",
+          "Ad hoc testing without planning",
+          "Testing with minimal test scripts",
+          "A structured approach with documentation"
+        ],
+        answer: 1
+      },
+      {
+    "question": "What is the purpose of functional testing?",
+    "options": [
+      "To test security vulnerabilities",
+      "To ensure that features work as expected",
+      "To measure the system's performance",
+      "To generate test reports"
+    ],
+    "answer": 1
+  },
+  {
+    "question": "What is an API test primarily used for?",
+    "options": [
+      "Testing UI components",
+      "Testing the back-end logic",
+      "Checking the user's experience",
+      "Designing the front-end"
+    ],
+    "answer": 1
+  },
+  {
+    "question": "Which Playwright feature allows testing across multiple browsers?",
+    "options": [
+      "BrowserContext",
+      "Cross-browser testing",
+      "PageNavigator",
+      "MultiPage Execution"
+    ],
+    "answer": 1
+  },
+  {
+    "question": "What is black-box testing?",
+    "options": [
+      "Testing with no knowledge of the internal code",
+      "Testing only the UI",
+      "Testing the application with full code access",
+      "Testing performance metrics"
+    ],
+    "answer": 0
+  },
+  {
+    "question": "Which method is used to run JavaScript code within a Playwright test?",
+    "options": [
+      "page.evaluate()",
+      "page.runScript()",
+      "evaluateCode()",
+      "browser.exec()"
+    ],
+    "answer": 0
+  },
+  {
+    "question": "What kind of testing ensures the new code does not break existing functionality?",
+    "options": [
+      "Smoke testing",
+      "Performance testing",
+      "Regression testing",
+      "Load testing"
+    ],
+    "answer": 2
+  },
+  {
+    "question": "Which Selenium command switches to an iframe?",
+    "options": [
+      "driver.switchToFrame()",
+      "driver.toIframe()",
+      "driver.switchTo().frame()",
+      "driver.iframeNavigate()"
+    ],
+    "answer": 2
+  },
+  {
+    "question": "What is the difference between Playwright and Selenium?",
+    "options": [
+      "Playwright only tests APIs",
+      "Selenium supports only Chrome",
+      "Playwright offers faster parallel execution",
+      "Selenium requires no coding"
+    ],
+    "answer": 2
+  },
+  {
+    "question": "Which tool allows the recording of test cases in Selenium?",
+    "options": [
+      "Selenium Hub",
+      "Selenium IDE",
+      "Selenium Grid",
+      "Selenium Recorder"
+    ],
+    "answer": 1
+  },
+  {
+    "question": "What is continuous testing?",
+    "options": [
+      "Testing only after deployment",
+      "Testing all features manually",
+      "Testing at every stage of development",
+      "Testing UI components only"
+    ],
+    "answer": 2
+  },
+  {
+    "question": "Which function in Playwright waits for an element to appear?",
+    "options": [
+      "waitForElement()",
+      "page.waitForTimeout()",
+      "page.waitForSelector()",
+      "element.wait()"
+    ],
+    "answer": 2
+  },
+  {
+    "question": "What is an assertion in testing?",
+    "options": [
+      "A tool to generate logs",
+      "A way to validate conditions",
+      "A method to report defects",
+      "A command to stop tests"
+    ],
+    "answer": 1
+  },
+  {
+    "question": "Which of the following is an example of non-functional testing?",
+    "options": [
+      "UI testing",
+      "Performance testing",
+      "Unit testing",
+      "Integration testing"
+    ],
+    "answer": 1
+  },
+  {
+    "question": "What is the purpose of Jest in testing?",
+    "options": [
+      "To test UI components",
+      "To manage CI/CD pipelines",
+      "To automate browser testing",
+      "To test JavaScript applications"
+    ],
+    "answer": 3
+  },
+  {
+    "question": "What is a mock object in testing?",
+    "options": [
+      "An incomplete UI element",
+      "A real component used in tests",
+      "A fake object that simulates behavior",
+      "An error-prone test case"
+    ],
+    "answer": 2
+  },
+  {
+    "question": "Which Playwright feature allows recording user flows?",
+    "options": [
+      "Playwright Logger",
+      "Playwright Trace Viewer",
+      "Playwright Inspector",
+      "Playwright Recorder"
+    ],
+    "answer": 3
+  },
+  {
+    "question": "What is a critical bug?",
+    "options": [
+      "A bug that affects appearance only",
+      "A bug that causes data loss or crashes",
+      "A bug that only impacts performance",
+      "A bug that does not affect functionality"
+    ],
+    "answer": 1
+  },
+  {
+    "question": "What is the command to maximize a browser window in Selenium?",
+    "options": [
+      "window.maximize()",
+      "driver.maximizeWindow()",
+      "driver.manage().window().maximize()",
+      "browser.setMax()"
+    ],
+    "answer": 2
+  },
+  {
+    "question": "Which Playwright method is used to close the browser?",
+    "options": [
+      "browser.terminate()",
+      "browser.shutdown()",
+      "browser.close()",
+      "page.quit()"
+    ],
+    "answer": 2
+  },
+  {
+    "question": "What is the purpose of cross-browser testing?",
+    "options": [
+      "To test performance on different devices",
+      "To ensure compatibility across multiple browsers",
+      "To find regressions in code",
+      "To automate UI testing"
+    ],
+    "answer": 1
+  },
+  {
+    "question": "What is headless browsing?",
+    "options": [
+      "A browser without a UI",
+      "A browser without developer tools",
+      "A browser without navigation controls",
+      "A browser without CSS rendering"
+    ],
+    "answer": 0
+  },
+  {
+    "question": "Which type of testing verifies individual units of code?",
+    "options": [
+      "Integration testing",
+      "Unit testing",
+      "System testing",
+      "Smoke testing"
+    ],
+    "answer": 1
+  },
+  {
+    "question": "What is the purpose of defect tracking tools?",
+    "options": [
+      "To manage test cases",
+      "To automate test execution",
+      "To track and manage bugs",
+      "To schedule deployments"
+    ],
+    "answer": 2
+  },
+  {
+    "question": "What is Playwright's advantage in parallel testing?",
+    "options": [
+      "It needs no installation",
+      "It supports zero-code testing",
+      "It offers browser contexts for parallelism",
+      "It tests only on Chrome"
+    ],
+    "answer": 2
+  },
+  {
+    "question": "Which Selenium method is used to get the page title?",
+    "options": [
+      "driver.getTitle()",
+      "browser.title()",
+      "page.getTitle()",
+      "element.title()"
+    ],
+    "answer": 0
+  },
+  {
+    "question": "What is the main purpose of QA testing?",
+    "options": [
+      "To find bugs",
+      "To improve user experience",
+      "To ensure software quality",
+      "All of the above"
+    ],
+    "answer": 3
+  },
+  {
+    "question": "Which of the following is a Selenium WebDriver method to open a webpage?",
+    "options": [
+      "driver.launch()",
+      "driver.openUrl()",
+      "driver.get()",
+      "driver.navigate()"
+    ],
+    "answer": 2
+  },
+  {
+    "question": "What does Playwright primarily test?",
+    "options": [
+      "Desktop applications",
+      "Mobile applications",
+      "Web applications",
+      "Databases"
+    ],
+    "answer": 2
+  },
+  {
+    "question": "What is the purpose of automation testing?",
+    "options": [
+      "To replace developers",
+      "To reduce manual effort",
+      "To identify design flaws",
+      "To perform UI design"
+    ],
+    "answer": 1
+  },
+  {
+    "question": "Which of the following browsers is NOT supported by Selenium?",
+    "options": [
+      "Chrome",
+      "Firefox",
+      "Opera",
+      "Safari"
+    ],
+    "answer": 2
+  },
+  {
+    "question": "In QA, what does CI/CD stand for?",
+    "options": [
+      "Continuous Improvement / Code Deployment",
+      "Continuous Integration / Continuous Deployment",
+      "Code Injection / Continuous Delivery",
+      "Continuous Interaction / Code Design"
+    ],
+    "answer": 1
+  },
+  {
+    "question": "What language is NOT typically used with Selenium WebDriver?",
+    "options": [
+      "Java",
+      "Python",
+      "Ruby",
+      "SQL"
+    ],
+    "answer": 3
+  },
+  {
+    "question": "What is a key advantage of using Playwright over Selenium?",
+    "options": [
+      "Supports headless browsing",
+      "Parallel testing without extra setup",
+      "Works only with Chrome",
+      "Requires no code"
+    ],
+    "answer": 1
+  },
+  {
+    "question": "What is the role of an assertion in automated testing?",
+    "options": [
+      "To input data",
+      "To verify test results",
+      "To generate reports",
+      "To pause test execution"
+    ],
+    "answer": 1
+  },
+  {
+    "question": "What is TestNG in Selenium?",
+    "options": [
+      "A browser plugin",
+      "A testing framework",
+      "A logging library",
+      "A performance tool"
+    ],
+    "answer": 1
+  },
+  {
+    "question": "Which of the following allows waiting for an element in Playwright?",
+    "options": [
+      "driver.waitElement()",
+      "await page.waitForSelector()",
+      "page.waitForElement()",
+      "element.waitVisible()"
+    ],
+    "answer": 1
+  },
+  {
+    "question": "What is a locator in Selenium?",
+    "options": [
+      "A search engine",
+      "A tool for identifying UI elements",
+      "A browser plugin",
+      "A data storage method"
+    ],
+    "answer": 1
+  },
+  {
+    "question": "What type of testing focuses on verifying an application's performance under stress?",
+    "options": [
+      "Unit testing",
+      "Load testing",
+      "Functional testing",
+      "Regression testing"
+    ],
+    "answer": 1
+  },
+  {
+    "question": "Which command is used in Selenium to simulate typing?",
+    "options": [
+      "sendKeys()",
+      "type()",
+      "enterText()",
+      "input()"
+    ],
+    "answer": 0
+  },
+  {
+    "question": "What is parallel testing?",
+    "options": [
+      "Running tests one after another",
+      "Running multiple tests simultaneously",
+      "Running tests on different machines",
+      "Testing different browsers manually"
+    ],
+    "answer": 1
+  },
+  {
+    "question": "Which is NOT a component of Selenium?",
+    "options": [
+      "Selenium WebDriver",
+      "Selenium IDE",
+      "Selenium Grid",
+      "Selenium Hub"
+    ],
+    "answer": 3
+  },
+  {
+    "question": "What is the main feature of Page Object Model (POM)?",
+    "options": [
+      "Increases test case execution time",
+      "Encapsulates page elements and actions",
+      "Allows coding in multiple languages",
+      "Makes the application design more complex"
+    ],
+    "answer": 1
+  },
+  {
+    "question": "How do you handle a dropdown in Selenium?",
+    "options": [
+      "Using the select() method",
+      "Using the choose() function",
+      "Using dropdown.click()",
+      "Using setValue()"
+    ],
+    "answer": 0
+  },
+  {
+    "question": "Which command is used in Playwright to navigate to a URL?",
+    "options": [
+      "go()",
+      "page.goto()",
+      "page.open()",
+      "url.navigate()"
+    ],
+    "answer": 1
+  },
+  {
+    "question": "What does Selenium Grid allow?",
+    "options": [
+      "Running tests in multiple environments",
+      "Testing without writing code",
+      "Using Selenium with API testing",
+      "Automating test plans"
+    ],
+    "answer": 0
+  },
+  {
+    "question": "What is the purpose of smoke testing?",
+    "options": [
+      "Testing only the UI components",
+      "Checking the core functionalities",
+      "Exhaustively testing the whole application",
+      "Focusing on security issues"
+    ],
+    "answer": 1
+  },
+  {
+    "question": "What is a flaky test?",
+    "options": [
+      "A test that always passes",
+      "A test that passes or fails inconsistently",
+      "A test that runs very fast",
+      "A test with no assertions"
+    ],
+    "answer": 1
+  },
+  {
+    "question": "What is the purpose of XPath in Selenium?",
+    "options": [
+      "To locate elements on a webpage",
+      "To format test cases",
+      "To generate reports",
+      "To simulate user input"
+    ],
+    "answer": 0
+  },
+  {
+    "question": "Which tool is used for behavior-driven development (BDD) in Playwright?",
+    "options": [
+      "Cucumber",
+      "Mocha",
+      "Jasmine",
+      "Jest"
+    ],
+    "answer": 0
+  },
+  {
+    "question": "Which method is used to click an element in Selenium WebDriver?",
+    "options": [
+      "element.press()",
+      "element.click()",
+      "clickElement()",
+      "tap()"
+    ],
+    "answer": 1
+  },
+  {
+    "question": "How can you capture a screenshot in Playwright?",
+    "options": [
+      "page.saveScreenshot()",
+      "page.capture()",
+      "page.screenshot()",
+      "takeScreenshot()"
+    ],
+    "answer": 2
+  },
+  {
+    "question": "What does 'shift-left testing' mean?",
+    "options": [
+      "Testing only at the end of development",
+      "Starting testing early in the development cycle",
+      "Testing only the UI components",
+      "Automating all manual test cases"
+    ],
+    "answer": 1
+  },
+  {
+    "question": "What is the main advantage of automated testing?",
+    "options": [
+      "It reduces the need for testers",
+      "It speeds up repetitive testing",
+      "It replaces performance testing",
+      "It eliminates all bugs"
+    ],
+    "answer": 1
+  },
+  {
+    "question": "What is the purpose of a test case?",
+    "options": [
+      "To find new developers",
+      "To validate a specific feature or functionality",
+      "To write documentation",
+      "To schedule deployments"
+    ],
+    "answer": 1
+  },
+  {
+    "question": "Which tool allows for API testing alongside UI testing?",
+    "options": [
+      "Jira",
+      "Postman",
+      "Selenium",
+      "Playwright"
+    ],
+    "answer": 1
+  },
+  {
+    "question": "What does a QA environment refer to?",
+    "options": [
+      "A meeting room",
+      "A separate environment for testing",
+      "A database server",
+      "A staging server for releases"
+    ],
+    "answer": 1
+  },
+  {
+    "question": "Which Selenium feature enables testing on multiple machines?",
+    "options": [
+      "Selenium Hub",
+      "Selenium Grid",
+      "Selenium Remote",
+      "Selenium Network"
+    ],
+    "answer": 1
+  },
+  {
+    "question": "What is smoke testing?",
+    "options": [
+      "Exhaustively testing all parts of the software",
+      "A quick test to ensure basic functionality",
+      "Testing the speed of the application",
+      "Security testing of web services"
+    ],
+    "answer": 1
+  },
+  {
+    "question": "What is the purpose of user acceptance testing (UAT)?",
+    "options": [
+      "To verify the performance of the software",
+      "To check if the system meets user expectations",
+      "To automate functional tests",
+      "To integrate all software components"
+    ],
+    "answer": 1
+  },
+  {
+    "question": "What is a 'test suite'?",
+    "options": [
+      "A set of related test cases",
+      "A tool for automated testing",
+      "A development environment",
+      "A dashboard for test reporting"
+    ],
+    "answer": 0
+  },
+  {
+    "question": "Which Playwright feature allows emulating different devices?",
+    "options": [
+      "Browser Context",
+      "Device Emulator",
+      "page.emulateDevice()",
+      "Virtual Environment"
+    ],
+    "answer": 0
+  },
+  {
+    "question": "What is the purpose of exploratory testing?",
+    "options": [
+      "To automate repetitive tasks",
+      "To discover issues without predefined test cases",
+      "To analyze application performance",
+      "To validate only backend services"
+    ],
+    "answer": 1
+  },
+  {
+    "question": "What does CSS Selector help identify in Selenium?",
+    "options": [
+      "Buttons only",
+      "JavaScript code",
+      "HTML elements",
+      "Browser logs"
+    ],
+    "answer": 2
+  },
+  {
+    "question": "What is the 'Arrange-Act-Assert' pattern?",
+    "options": [
+      "A coding technique",
+      "A testing strategy",
+      "A bug classification method",
+      "A way to log test cases"
+    ],
+    "answer": 1
+  },
+  {
+    "question": "How do you run Playwright tests headlessly?",
+    "options": [
+      "By adding '--headless' in the command",
+      "With a graphical interface",
+      "Using 'headless: false' in config",
+      "It is always headless by default"
+    ],
+    "answer": 0
+  },
+  {
+    "question": "What is the purpose of version control in testing?",
+    "options": [
+      "To track changes in test scripts and cases",
+      "To manage databases",
+      "To log errors in code",
+      "To control browser versions"
+    ],
+    "answer": 0
+  },
+  {
+    "question": "What is a defect in software testing?",
+    "options": [
+      "An enhancement request",
+      "A flaw or bug in the application",
+      "An unapproved feature",
+      "A delay in project delivery"
+    ],
+    "answer": 1
+  },
+  {
+    "question": "What is the main focus of load testing?",
+    "options": [
+      "Testing under heavy user load",
+      "Checking only UI elements",
+      "Automating API tests",
+      "Testing on different browsers"
+    ],
+    "answer": 0
+  },
+  {
+    "question": "What is a common tool for CI/CD pipelines?",
+    "options": [
+      "GitHub Actions",
+      "Selenium IDE",
+      "Playwright Recorder",
+      "Jenkins"
+    ],
+    "answer": 3
+  },
+  {
+    "question": "What is a negative test case?",
+    "options": [
+      "A test to check unexpected behavior",
+      "A test designed to ensure the UI looks good",
+      "A test with no input values",
+      "A test to speed up performance"
+    ],
+    "answer": 0
+  },
+  {
+    "question": "Which of the following is NOT a QA metric?",
+    "options": [
+      "Defect density",
+      "Test coverage",
+      "Code complexity",
+      "Defect leakage"
+    ],
+    "answer": 2
+  },
+  {
+    "question": "What is a zero-defect release?",
+    "options": [
+      "A release without critical issues",
+      "A release with no regressions",
+      "A release with no logged bugs",
+      "A release where tests are skipped"
+    ],
+    "answer": 0
+  },
+  {
+    "question": "What is the primary goal of continuous integration?",
+    "options": [
+      "To add more features",
+      "To find UI bugs",
+      "To detect integration issues early",
+      "To release new versions daily"
+    ],
+    "answer": 2
+  },
+  {
+    "question": "What type of testing ensures the system works as a whole?",
+    "options": [
+      "Unit testing",
+      "System testing",
+      "Load testing",
+      "Regression testing"
+    ],
+    "answer": 1
+  },
+  {
+    "question": "What is the 'happy path' in testing?",
+    "options": [
+      "A test case without any errors",
+      "Testing only on weekends",
+      "A test case focused on edge cases",
+      "A test scenario with expected inputs and outputs"
+    ],
+    "answer": 3
+  },
+  {
+    "question": "What is the difference between alpha and beta testing?",
+    "options": [
+      "Alpha is internal, beta is public",
+      "Alpha is manual, beta is automated",
+      "Alpha tests UI, beta tests APIs",
+      "Beta testing is shorter than alpha"
+    ],
+    "answer": 0
+  }, 
+  {
+    "question": "What is manual testing?",
+    "options": [
+      "Testing performed without automation tools",
+      "Testing performed by robots",
+      "Testing only APIs",
+      "A technique to test code performance"
+    ],
+    "answer": 0
+  },
+  {
+    "question": "Which phase involves writing test cases in manual testing?",
+    "options": [
+      "Test planning",
+      "Test execution",
+      "Test design",
+      "Test reporting"
+    ],
+    "answer": 2
+  },
+  {
+    "question": "Which type of testing ensures all features meet customer expectations?",
+    "options": [
+      "Unit testing",
+      "System testing",
+      "User Acceptance Testing (UAT)",
+      "Load testing"
+    ],
+    "answer": 2
+  },
+  {
+    "question": "What is a test case?",
+    "options": [
+      "A document that outlines test steps and expected results",
+      "A bug report",
+      "A code snippet for testing",
+      "A tool for automating tests"
+    ],
+    "answer": 0
+  },
+  {
+    "question": "Which document outlines the scope, approach, and resources for testing?",
+    "options": [
+      "Test case",
+      "Bug report",
+      "Test plan",
+      "Release notes"
+    ],
+    "answer": 2
+  },
+  {
+    "question": "What is ad-hoc testing?",
+    "options": [
+      "Testing without planning or documentation",
+      "Testing a single feature repeatedly",
+      "Testing the application performance",
+      "Testing with automation tools only"
+    ],
+    "answer": 0
+  },
+  {
+    "question": "What does exploratory testing focus on?",
+    "options": [
+      "Automated tools",
+      "Checking performance under stress",
+      "Discovering issues without predefined cases",
+      "Writing detailed test reports"
+    ],
+    "answer": 2
+  },
+  {
+    "question": "What is a defect report?",
+    "options": [
+      "A report containing test plans",
+      "A report documenting bugs or errors",
+      "A list of passed test cases",
+      "A tool for scheduling tests"
+    ],
+    "answer": 1
+  },
+  {
+    "question": "What is boundary value analysis?",
+    "options": [
+      "A technique for performance testing",
+      "A method to test values at the edge of input ranges",
+      "Testing only user interfaces",
+      "Testing the software without requirements"
+    ],
+    "answer": 1
+  },
+  {
+    "question": "What does a 'test environment' refer to?",
+    "options": [
+      "The location where developers meet",
+      "The system setup required to execute tests",
+      "The production server",
+      "The list of test cases"
+    ],
+    "answer": 1
+  },
+  {
+    "question": "What is positive testing?",
+    "options": [
+      "Testing with unexpected inputs",
+      "Testing with valid inputs to ensure expected behavior",
+      "Testing in multiple environments",
+      "Testing that focuses only on performance"
+    ],
+    "answer": 1
+  },
+  {
+    "question": "What is a prerequisite for writing manual test cases?",
+    "options": [
+      "Access to automation tools",
+      "Understanding the application requirements",
+      "Executing other test cases",
+      "Creating bug reports"
+    ],
+    "answer": 1
+  },
+  {
+    "question": "What type of testing focuses on finding defects introduced by recent changes?",
+    "options": [
+      "Smoke testing",
+      "Regression testing",
+      "Unit testing",
+      "Performance testing"
+    ],
+    "answer": 1
+  },
+  {
+    "question": "What is usability testing?",
+    "options": [
+      "Testing how easily users can navigate the application",
+      "Testing backend processes",
+      "Testing for security vulnerabilities",
+      "Testing automated workflows"
+    ],
+    "answer": 0
+  },
+  {
+    "question": "Which type of testing checks if new code works with existing code?",
+    "options": [
+      "System testing",
+      "Unit testing",
+      "Integration testing",
+      "Security testing"
+    ],
+    "answer": 2
+  },
+  {
+    "question": "What is the key focus of black-box testing?",
+    "options": [
+      "Understanding the internal code structure",
+      "Testing functionality without knowing the internal logic",
+      "Testing with automation tools only",
+      "Improving the database design"
+    ],
+    "answer": 1
+  },
+  {
+    "question": "Which document is often created after finding a bug?",
+    "options": [
+      "Test case",
+      "Bug report",
+      "Test plan",
+      "Project roadmap"
+    ],
+    "answer": 1
+  },
+  {
+    "question": "What is a test scenario?",
+    "options": [
+      "A high-level concept of what to test",
+      "A detailed step-by-step execution",
+      "An automation tool",
+      "A bug tracking report"
+    ],
+    "answer": 0
+  },
+  {
+    "question": "What does 'retesting' mean?",
+    "options": [
+      "Testing a different part of the application",
+      "Testing an already tested part to confirm a defect is fixed",
+      "Testing only the UI components",
+      "Skipping failed tests"
+    ],
+    "answer": 1
+  },
+  {
+    "question": "What is the primary role of a QA tester?",
+    "options": [
+      "To design the application UI",
+      "To find and report bugs",
+      "To manage databases",
+      "To write deployment scripts"
+    ],
+    "answer": 1
+  },
+  {
+    "question": "What is a manual test script?",
+    "options": [
+      "An automated code snippet",
+      "A list of SQL queries",
+      "A written sequence of steps for testing",
+      "A tool used for load testing"
+    ],
+    "answer": 2
+  },
+  {
+    "question": "What is the outcome of a passed test case?",
+    "options": [
+      "A bug report",
+      "A feature enhancement request",
+      "A confirmation that the feature works as expected",
+      "A code refactor"
+    ],
+    "answer": 2
+  },
+  {
+    "question": "What is defect leakage?",
+    "options": [
+      "A defect found during UAT or production",
+      "A defect found during regression testing",
+      "A defect missed during performance testing",
+      "A feature request not implemented"
+    ],
+    "answer": 0
+  },
+  {
+    "question": "What is equivalence partitioning?",
+    "options": [
+      "A method to group test cases by similarity",
+      "A technique to divide input data into valid and invalid sets",
+      "A tool for automating testing",
+      "A way to schedule deployments"
+    ],
+    "answer": 1
+  },
+  {
+    "question": "What is the first step in the testing lifecycle?",
+    "options": [
+      "Test case design",
+      "Test planning",
+      "Test execution",
+      "Test closure"
+    ],
+    "answer": 1
+  }, 
+  {
+    "question": "What is the purpose of a bug severity level?",
+    "options": [
+      "To define the time taken to fix a bug",
+      "To determine the impact of the bug on the system",
+      "To prioritize which tester works on the bug",
+      "To calculate the cost of fixing the bug"
+    ],
+    "answer": 1
+  },
+  {
+    "question": "What is the difference between a defect and a bug?",
+    "options": [
+      "A bug is only in code, while a defect is a requirement mismatch",
+      "A defect is only in automation tools",
+      "They are exactly the same",
+      "A bug only applies to production environments"
+    ],
+    "answer": 0
+  },
+  {
+    "question": "What is a 'test closure report'?",
+    "options": [
+      "A report summarizing test activities and results",
+      "A bug report with closed issues",
+      "A project handover document",
+      "A document for assigning testers"
+    ],
+    "answer": 0
+  },
+  {
+    "question": "When is sanity testing performed?",
+    "options": [
+      "After receiving a new build",
+      "Before deployment to production",
+      "During regression testing",
+      "After fixing critical bugs"
+    ],
+    "answer": 0
+  },
+  {
+    "question": "What is cross-browser testing?",
+    "options": [
+      "Testing across different networks",
+      "Testing an application on multiple browsers",
+      "Testing multiple databases",
+      "Testing only on Chrome"
+    ],
+    "answer": 1
+  },
+  {
+    "question": "What is meant by defect life cycle?",
+    "options": [
+      "The phases a defect goes through from discovery to closure",
+      "The lifespan of a bug in production",
+      "The steps involved in test planning",
+      "A list of high-priority defects"
+    ],
+    "answer": 0
+  },
+  {
+    "question": "What is test data?",
+    "options": [
+      "Data used to train automation tools",
+      "Data prepared for testing scenarios",
+      "A report that stores all test cases",
+      "Data only available in production environments"
+    ],
+    "answer": 1
+  },
+  {
+    "question": "What does 'defect priority' indicate?",
+    "options": [
+      "How soon the bug should be fixed",
+      "The number of testers assigned to a bug",
+      "The cost of fixing the defect",
+      "The severity of the bug"
+    ],
+    "answer": 0
+  },
+  {
+    "question": "What type of testing focuses on checking compliance with regulations?",
+    "options": [
+      "Regression testing",
+      "Compliance testing",
+      "Exploratory testing",
+      "Load testing"
+    ],
+    "answer": 1
+  },
+  {
+    "question": "What is 'end-to-end testing'?",
+    "options": [
+      "Testing the entire application from start to finish",
+      "Testing only the login page",
+      "Testing in a development environment",
+      "Testing only the backend services"
+    ],
+    "answer": 0
+  },
+  {
+    "question": "What is a 'showstopper defect'?",
+    "options": [
+      "A minor defect found during development",
+      "A critical defect that blocks the release",
+      "A bug that affects UI alignment",
+      "A performance issue in non-production environments"
+    ],
+    "answer": 1
+  },
+  {
+    "question": "What is 'impact analysis' in manual testing?",
+    "options": [
+      "Analyzing the impact of a new feature",
+      "Identifying areas affected by a bug or change",
+      "A report listing all failed test cases",
+      "A tool for measuring performance impact"
+    ],
+    "answer": 1
+  },
+  {
+    "question": "What is the key purpose of test execution?",
+    "options": [
+      "Designing new features",
+      "Running test cases to validate the software",
+      "Identifying developers for bug fixing",
+      "Scheduling project meetings"
+    ],
+    "answer": 1
+  },
+  {
+    "question": "When is regression testing required?",
+    "options": [
+      "After adding new features",
+      "During the initial test phase",
+      "Before test planning begins",
+      "After each production release"
+    ],
+    "answer": 0
+  },
+  {
+    "question": "Which type of testing verifies that critical functions work after changes?",
+    "options": [
+      "Unit testing",
+      "Sanity testing",
+      "Smoke testing",
+      "Regression testing"
+    ],
+    "answer": 3
+  },
+  {
+    "question": "What is a 'test coverage report'?",
+    "options": [
+      "A report detailing areas covered by tests",
+      "A list of all test cases executed",
+      "A summary of test tools used",
+      "A list of bugs reported during testing"
+    ],
+    "answer": 0
+  },
+  {
+    "question": "What does a traceability matrix show?",
+    "options": [
+      "A map of all features",
+      "The relationship between requirements and test cases",
+      "A diagram of the software architecture",
+      "A flow of the development process"
+    ],
+    "answer": 1
+  },
+  {
+    "question": "What is the purpose of equivalence partitioning?",
+    "options": [
+      "To test only edge cases",
+      "To divide input data into valid and invalid sets",
+      "To generate code coverage reports",
+      "To prioritize test cases"
+    ],
+    "answer": 1
+  },
+  {
+    "question": "When is a 'bug retest' performed?",
+    "options": [
+      "After reporting the bug",
+      "After the bug is fixed by developers",
+      "Before the release is planned",
+      "During test planning"
+    ],
+    "answer": 1
+  },
+  {
+    "question": "What is meant by 'QA sign-off'?",
+    "options": [
+      "Approval to move the software to production",
+      "A list of all passed test cases",
+      "A certificate issued by testers",
+      "The final code review"
+    ],
+    "answer": 0
+  },
+  {
+    "question": "What type of testing involves testing the application without any documentation?",
+    "options": [
+      "Ad-hoc testing",
+      "Unit testing",
+      "Regression testing",
+      "Sanity testing"
+    ],
+    "answer": 0
+  },
+  {
+    "question": "What is the goal of alpha testing?",
+    "options": [
+      "To test performance under heavy load",
+      "To find bugs internally before public release",
+      "To ensure users are happy with the UI",
+      "To validate APIs only"
+    ],
+    "answer": 1
+  },
+  {
+    "question": "What does 'QA ownership' mean?",
+    "options": [
+      "Assigning all bugs to developers",
+      "QA team is responsible for software quality",
+      "Ownership of the source code",
+      "Only testers can log defects"
+    ],
+    "answer": 1
+  },
+  {
+    "question": "What is boundary testing?",
+    "options": [
+      "Testing at the limits of input values",
+      "Testing internal code structure",
+      "Testing across multiple environments",
+      "Testing without test cases"
+    ],
+    "answer": 0
+  },
+  {
+    "question": "When is a test considered 'flaky'?",
+    "options": [
+      "When it always fails",
+      "When it passes or fails inconsistently",
+      "When it is automated",
+      "When it tests multiple features"
+    ],
+    "answer": 1
+  },
+
+  {
+    "question": "Which section of a test plan outlines what will not be tested?",
+    "options": [
+      "Introduction",
+      "Scope",
+      "Exclusions",
+      "Assumptions"
+    ],
+    "answer": 2
+  },
+  {
+    "question": "What is the role of 'expected result' in a test case?",
+    "options": [
+      "To summarize the entire project",
+      "To predict the release date",
+      "To describe the expected behavior after the test",
+      "To assign a developer to the test"
+    ],
+    "answer": 2
+  },
+  {
+    "question": "Which of the following is a key component of a test scenario?",
+    "options": [
+      "Detailed code snippets",
+      "High-level functionality to be tested",
+      "Screenshots of bugs",
+      "A roadmap for production releases"
+    ],
+    "answer": 1
+  },
+  {
+    "question": "What type of test case ensures the system handles invalid inputs correctly?",
+    "options": [
+      "Regression test case",
+      "Performance test case",
+      "Negative test case",
+      "Sanity test case"
+    ],
+    "answer": 2
+  },
+  {
+    "question": "What does a blocked test case mean?",
+    "options": [
+      "A test case that cannot be executed due to dependencies",
+      "A test case that passed successfully",
+      "A test that needs more testers",
+      "A test with no expected result"
+    ],
+    "answer": 0
+  },
+  {
+    "question": "Which section of a test plan outlines testing risks?",
+    "options": [
+      "Scope",
+      "Risks and Mitigation",
+      "Test Execution",
+      "Summary"
+    ],
+    "answer": 1
+  },
+  {
+    "question": "Which metric indicates the percentage of the code covered by tests?",
+    "options": [
+      "Bug leakage",
+      "Code coverage",
+      "Defect density",
+      "Performance index"
+    ],
+    "answer": 1
+  },
+  {
+    "question": "What should you do if a test case fails?",
+    "options": [
+      "Log a bug and assign it to developers",
+      "Ignore it and move to the next test case",
+      "Delete the failed test case",
+      "Stop all testing activities"
+    ],
+    "answer": 0
+  },
+  {
+    "question": "What is the purpose of a 'blocked' status in test cases?",
+    "options": [
+      "To indicate the test case is no longer needed",
+      "To signal the need for more testers",
+      "To show that the test cannot proceed due to dependencies",
+      "To highlight that a test case failed"
+    ],
+    "answer": 2
+  },
+  {
+    "question": "What is the purpose of test execution?",
+    "options": [
+      "To develop new features",
+      "To run test cases and validate software functionality",
+      "To replace developers",
+      "To monitor production environments"
+    ],
+    "answer": 1
+  },
+  {
+    "question": "What is the goal of 'negative testing'?",
+    "options": [
+      "To validate the system against unexpected inputs",
+      "To check system performance under load",
+      "To find UI bugs only",
+      "To automate repetitive tasks"
+    ],
+    "answer": 0
+  },
+  {
+    "question": "What is a good practice when writing test cases?",
+    "options": [
+      "Include clear steps and expected results",
+      "Use complex language to describe functionality",
+      "Only cover positive scenarios",
+      "Avoid updating test cases after execution"
+    ],
+    "answer": 0
+  },
+  {
+    "question": "What is meant by test case reusability?",
+    "options": [
+      "Using the same test case across different projects or features",
+      "Writing the same test case multiple times",
+      "Testing the same feature repeatedly",
+      "Deleting duplicate test cases"
+    ],
+    "answer": 0
+  },
+  {
+    "question": "What does 'test completion criteria' refer to?",
+    "options": [
+      "The number of bugs found during testing",
+      "The conditions that indicate testing is complete",
+      "The time it takes to execute a test case",
+      "The percentage of code written by developers"
+    ],
+    "answer": 1
+  },
+  {
+    "question": "When should a 'regression test' be performed?",
+    "options": [
+      "When a new feature is added",
+      "Only during production releases",
+      "Before designing test cases",
+      "After each test execution"
+    ],
+    "answer": 0
+  },
+  {
+    "question": "What is the difference between 'test data' and 'test scenario'?",
+    "options": [
+      "Test data is the input, while test scenario is what you are testing",
+      "Test scenario lists bugs, while test data tracks coverage",
+      "Test data refers to production data",
+      "Test scenario includes only manual test cases"
+    ],
+    "answer": 0
+  },
+  {
+    "question": "Which tool is typically used to document and track test cases?",
+    "options": [
+      "Jira",
+      "Selenium",
+      "GitHub",
+      "Postman"
+    ],
+    "answer": 0
+  },
+  {
+    "question": "Which section of a test plan outlines testing scope?",
+    "options": [
+      "Test Strategy",
+      "Scope of Testing",
+      "Test Artifacts",
+      "Bug Summary"
+    ],
+    "answer": 1
+  },
+  {
+    "question": "Which document ensures that all customer requirements are met?",
+    "options": [
+      "Bug Report",
+      "Test Plan",
+      "Requirements Traceability Matrix",
+      "User Guide"
+    ],
+    "answer": 2
+  },
+  {
+    "question": "What is the purpose of a traceability matrix?",
+    "options": [
+      "To map requirements to test cases",
+      "To track test results only",
+      "To list bugs discovered in production",
+      "To automate UI testing"
+    ],
+    "answer": 0
+  }
+      // ... More questions
+    ];
+
+    // Shuffle questions array to randomize questions
+    function shuffleQuestions() {
+      for (let i = questions.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [questions[i], questions[j]] = [questions[j], questions[i]];
+      }
+    }
+
+    function loadQuestion() {
+      if (currentQuestion === 0) {
+        playerName = document.getElementById('playerName').value;
+        maxQuestions = parseInt(document.getElementById('maxQuestions').value);
+
+        if (!playerName) {
+          alert('Please enter your name to start the game.');
+          return;
+        }
+        if (isNaN(maxQuestions) || maxQuestions < 1 || maxQuestions > questions.length) {
+          alert('Please enter a valid number of questions (1 to ' + questions.length + ').');
+          return;
+        }
+        shuffleQuestions(); // Shuffle questions at the start of the game
+        selectedQuestions = questions.slice(0, maxQuestions);
+      }
+
+      if (currentQuestion < selectedQuestions.length) {
+        const questionContainer = document.getElementById('questionContainer');
+        const questionData = selectedQuestions[currentQuestion];
+
+        questionContainer.innerHTML = `
+          <div class="question">
+            <h3>Question ${currentQuestion + 1}: ${questionData.question}</h3>
+            <ul class="options">
+              ${questionData.options.map((option, index) => `
+                <li>
+                  <button class="btn" onclick="checkAnswer(${index})">${option}</button>
+                </li>
+              `).join('')}
+            </ul>
+          </div>
+        `;
+        updateScoreCounter();
+      } else {
+        showFinalScore();
+      }
+    }
+
+    function checkAnswer(selectedOption) {
+      const correctAnswer = selectedQuestions[currentQuestion].answer;
+      if (selectedOption === correctAnswer) {
+        score++;
+      } else {
+        showIncorrectAnswerPopup();
+      }
+      currentQuestion++;
+      loadQuestion();
+    }
+
+    function showIncorrectAnswerPopup() {
+      const popup = document.createElement('div');
+      popup.className = 'popup';
+      popup.innerHTML = `
+        <p>Incorrect answer. Try the next question!</p>
+        <button onclick="closePopup()">OK</button>
+      `;
+      document.body.appendChild(popup);
+    }
+
+    function closePopup() {
+      const popup = document.querySelector('.popup');
+      if (popup) {
+        document.body.removeChild(popup);
+      }
+    }
+
+    function showFinalScore() {
+      const questionContainer = document.getElementById('questionContainer');
+      const scorePercentage = (score / selectedQuestions.length) * 100;
+      let message = `Your final score is: ${score} / ${selectedQuestions.length}`;
+      if (scorePercentage >= 90) {
+        message += `<br>Congratulations, ${playerName}! You have won the game!`;
+      } else {
+        message += `<br>Good try, ${playerName}. Better luck next time!`;
+      }
+
+      questionContainer.innerHTML = `
+        <div class="score">
+          <h2>Game Over!</h2>
+          <p>${message}</p>
+          <button class="btn" onclick="restartGame()">Play Again</button>
+        </div>
+      `;
+    }
+
+    function updateScoreCounter() {
+      const scoreCounter = document.getElementById('scoreCounter');
+      scoreCounter.textContent = `Correct Answers: ${score} / ${selectedQuestions.length}`;
+    }
+
+    function restartGame() {
+      currentQuestion = 0;
+      score = 0;
+      document.getElementById('playerNameContainer').style.display = 'block';
+      document.getElementById('questionContainer').innerHTML = '';
+      updateScoreCounter();
+    }
+
+    window.onload = function() {
+      document.getElementById('startGameButton').onclick = function() {
+        document.getElementById('playerNameContainer').style.display = 'none';
+        loadQuestion();
+      };
+    };
+  </script>
+</head>
+<body>
+  <div class="container">
+    <h1>Legion QA Wizards Gym</h1>
+    <div id="playerNameContainer" class="name-input">
+      <label for="playerName">Enter Your Name:</label>
+      <input type="text" id="playerName" class="form-control" placeholder="Your Name">
+      <br>
+      <label for="maxQuestions">Enter Number of Questions:</label>
+      <input type="number" id="maxQuestions" class="form-control" placeholder="Number of Questions">
+      <button id="startGameButton" class="btn">Start Game</button>
+    </div>
+    <div id="questionContainer"></div>
+    <div id="scoreCounter" class="correct-counter">Correct Answers: 0 / 0<button class="btn" onclick="window.location.href='index.html'">Back to Home</button>
+    </div>
+  </div>
+</body>
+</html>

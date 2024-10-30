@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap" rel="stylesheet">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Legion QA Guild Signup</title>
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(to right, #f3d9b1, #e09f3e);
+      background-size: cover;
+      margin: 0;
+      padding: 20px;
+    }
+    .container {
+      max-width: 900px;
+      margin: auto;
+      background: #fff;
+      padding: 20px;
+      box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+    }
+    h1, h2 {
+      text-align: center;
+      color: #2c3e50;
+    }
+    .form-control {
+      display: block;
+      width: 100%;
+      padding: 10px;
+      margin: 10px 0;
+      box-sizing: border-box;
+    }
+    .btn {
+      padding: 10px 20px;
+      margin: 10px;
+      background-color: #1abc9c;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+    .btn:hover {
+      background-color: #16a085;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+    }
+    th, td {
+      padding: 12px;
+      border: 1px solid #ddd;
+      text-align: left;
+    }
+    th {
+      background-color: #8a2c0a;
+      color: white;
+    }
+    .tooltip {
+      position: relative;
+      display: inline-block;
+    }
+    .tooltip .tooltiptext {
+      visibility: hidden;
+      width: 200px;
+      background-color: #333;
+      color: #fff;
+      text-align: center;
+      border-radius: 6px;
+      padding: 5px;
+      position: absolute;
+      z-index: 1;
+      bottom: 125%;
+      left: 50%;
+      margin-left: -100px;
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+    .tooltip:hover .tooltiptext {
+      visibility: visible;
+      opacity: 1;
+    }
+    iframe {
+      width: 100%;
+      height: 300px;
+      border: 1px solid #ddd;
+      margin-top: 20px;
+    }
+    .nav {
+      text-align: center;
+      margin-top: 20px;
+    }
+    .nav a {
+      padding: 10px 20px;
+      margin: 5px;
+      background-color: #2980b9;
+      color: white;
+      text-decoration: none;
+      border-radius: 5px;
+    }
+    .nav a:hover {
+      background-color: #2c3e50;
+    }
+  </style>
+  <script>
+    function toggleDialog() {
+      const dialog = document.getElementById('infoDialog');
+      dialog.style.display = 'block';
+      document.getElementById('closeInfoPopup').onclick = function() {
+        dialog.style.display = 'none';
+      };
+    }
+    function closeDialog() {
+      const dialog = document.getElementById('infoDialog');
+      dialog.close();
+    }
+    function dragStart(event) {
+      event.dataTransfer.setData("text", event.target.id);
+    }
+    function allowDrop(event) {
+      event.preventDefault();
+    }
+    function drop(event) {
+      event.preventDefault();
+      const data = event.dataTransfer.getData("text");
+      event.target.appendChild(document.getElementById(data));
+    }
+  
+    function addHeroToTable(event) {
+      event.preventDefault();
+      const name = document.getElementById('name').value;
+      const email = document.getElementById('email').value;
+      const side = document.querySelector('input[name="side"]:checked')?.value;
+
+      if (name && email && side) {
+        const table = document.querySelector('table tbody');
+        const newRow = table.insertRow();
+        newRow.innerHTML = `<td>${name}</td><td>${email}</td><td>${side}</td><td>${document.getElementById('level').value}</td>`;
+      } else {
+        const popup = document.createElement('div');
+        popup.style.position = 'fixed';
+        popup.style.top = '50%';
+        popup.style.left = '50%';
+        popup.style.transform = 'translate(-50%, -50%)';
+        popup.style.backgroundColor = '#2c3e50';
+        popup.style.color = '#ecf0f1';
+        popup.style.padding = '30px';
+        popup.style.borderRadius = '15px';
+        popup.style.textAlign = 'center';
+        popup.style.boxShadow = '0 0 20px rgba(0, 0, 0, 0.5)';
+        popup.style.zIndex = '1000';
+        popup.innerHTML = `
+          <p>By the decree of the Guildmaster, thou must complete all required fields!</p>
+          <button id="closePopup" style="background-color: #e74c3c; color: #fff; border: none; padding: 10px 20px; cursor: pointer; border-radius: 10px; margin-top: 20px;">Aye, I Shall Comply!</button>
+        `;
+        document.body.appendChild(popup);
+        document.getElementById('closePopup').onclick = function() {
+          document.body.removeChild(popup);
+        };
+        document.body.appendChild(popup);
+      }
+    }
+  
+    function uploadPhoto(event) {
+      const fileInput = document.getElementById('photoUpload');
+      const files = fileInput.files;
+
+      if (files.length > 0) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          const heroPool = document.getElementById('heroPool');
+          const newHero = document.createElement('img');
+          newHero.src = e.target.result;
+          newHero.draggable = true;
+          newHero.ondragstart = dragStart;
+          newHero.alt = 'New Tester';
+          newHero.style.width = '50px';
+          newHero.style.height = '50px';
+          newHero.id = 'hero' + (heroPool.children.length + 1);
+          heroPool.appendChild(newHero);
+        };
+        reader.readAsDataURL(files[0]);
+      }
+    }
+  </script>
+</head>
+<body>
+  <div class="container">
+    <div style="display: flex; align-items: center; justify-content: center;"><img src="logo.png" alt="Legion QA Logo" style="width: 50px; height: 50px; margin-right: 10px;"><h1>Legion QA Guild Signup</h1></div>
+
+
+    <h2>Join the QA Guild</h2>
+    <form id="signupForm" onsubmit="addHeroToTable(event)">
+      <label for="name">Your Tester Alias:</label>
+      <input type="text" id="name" name="name" class="form-control" placeholder="Enter your tester alias">
+
+      <label for="email">Scroll (Email for Bug Alerts!):</label>
+      <input type="email" id="email" name="email" class="form-control" placeholder="Enter your scroll (email)">
+
+      <label for="superpower">Select Your QA Trait:</label>
+      <select id="superpower" class="form-control">
+        <option value="bug_finder">Bug Hunter's Eye</option>
+        <option value="invisibility">Stealth Testing</option>
+        <option value="super_strength">Stress Testing Strength</option>
+        <option value="mind_reading">User Mind Reading</option>
+      </select>
+
+      <fieldset>
+        <legend>Pick Your Allegiance:</legend>
+        <label><input type="radio" name="side" value="hero"> Hero of Quality</label><br>
+        <label><input type="radio" name="side" value="trickster"> Trickster of Bugs</label>
+      </fieldset>
+
+      <br><fieldset>
+        <legend>Choose Your Skills:</legend>
+        <label><input type="checkbox" name="abilities" value="speed"> Automation Speed</label><br>
+        <label><input type="checkbox" name="abilities" value="healing"> Bug Fixing Touch</label><br>
+        <label><input type="checkbox" name="abilities" value="tech"> Advanced Debugging Gadgets</label>
+      </fieldset>
+
+      <br><label for="photoUpload">Upload Your Tester Portrait:</label>
+      <input type="file" id="photoUpload" class="form-control" accept="image/*" onchange="uploadPhoto(event)"><br><div class="tooltip">Need Help?
+        <span class="tooltiptext">Enter your tester details, pick a side, and select your skills to join!</span>
+      </div>
+
+      <label for="date">Choose Your QA Guild Membership Start Date:</label>
+      <input type="date" id="date" class="form-control">
+
+      <label for="level">Select Your QA Skill Level:</label>
+      <input type="range" id="level" name="level" min="0" max="100" oninput="document.getElementById('skillLevelValue').textContent = this.value">
+      <span id="skillLevelValue">50</span>
+
+      <button type="button" class="btn" onclick="toggleDialog()">Guild Info</button>
+      <button type="submit" class="btn">Join the QA Guild!</button>
+      <button type="button" class="btn" onclick="window.location.href='trivia.html'">Improve your skills</button>
+
+    
+    </form>
+    
+    <h2>Guild Members</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Tester Alias</th>
+          <th>Scroll (Email)</th>
+          <th>Allegiance</th>
+          <th>QA Skill Level</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Bugslayer Eldric</td>
+          <td>eldric@realmwatchers.com</td>
+          <td>Hero of Quality</td>
+          <td>85</td>
+        </tr>
+        <tr>
+          <td>Nyx the Debugger</td>
+          <td>nyx@chaosinc.com</td>
+          <td>Trickster of Bugs</td>
+          <td>72</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div id="infoDialog" style="display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background-color: #2c3e50; color: #ecf0f1; padding: 30px; border-radius: 15px; text-align: center; box-shadow: 0 0 20px rgba(0, 0, 0, 0.5); z-index: 1000;">
+      <p>Welcome to Legion QA! By joining the QA guild, you'll receive exclusive testing quests, quality news, and secret challenges.</p>
+      <button id="closeInfoPopup" style="background-color: #e74c3c; color: #fff; border: none; padding: 10px 20px; cursor: pointer; border-radius: 10px; margin-top: 20px;">Aye, I Understand!</button>
+    </div>
+
+    <h2>Drag & Drop: Assemble Your Testing Party!</h2>
+    <div id="teamArea" ondrop="drop(event)" ondragover="allowDrop(event)" style="border: 2px dashed #aaa; padding: 20px;">
+      <p>Drag testers here:</p>
+    </div><br>
+    <div id="heroPool">
+      <img id="hero1" src="elf.png" draggable="true" ondragstart="dragStart(event)" alt="Tester 1" style="width: 50px; height: 50px;">
+      <img id="hero2" src="human.png" draggable="true" ondragstart="dragStart(event)" alt="Tester 2" style="width: 50px; height: 50px;">
+    </div>
+    <div style="text-align: center;">
+      <button type="button" class="btn" onclick="window.location.href='quest-configuration.html'">Start Your Testing Quest</button>
+    </div>
+  </div>
+</body>
+</html>
